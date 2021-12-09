@@ -37,7 +37,7 @@ function getNeighbours(mixed $point): array
     ];
 }
 
-function getBassin($points, $grid) {
+function getBasin($points, $grid) {
 
     $newPoints = [];
 
@@ -57,16 +57,16 @@ function getBassin($points, $grid) {
     }
 
     else {
-        return getBassin(array_merge($points, $newPoints), $grid);
+        return getBasin(array_merge($points, $newPoints), $grid);
     }
 }
 
-$bassins = array_map(fn ($bassin) => getBassin([$bassin], $grid), $lowPoints);
+$basins = array_map(fn ($basin) => getBasin([$basin], $grid), $lowPoints);
 
-$bassinSizes = array_map(fn ($bassin) => count($bassin), $bassins);
+$basinSizes = array_map(fn ($basin) => count($basin), $basins);
 
-rsort($bassinSizes);
+rsort($basinSizes);
 
-$total = array_product(array_slice($bassinSizes, 0, 3));
+$total = array_product(array_slice($basinSizes, 0, 3));
 
 echo $total.PHP_EOL;
