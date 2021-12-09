@@ -41,17 +41,17 @@ function getBassin($points, $grid) {
 
     foreach ($points as $point) {
 
-        if (isset($grid[$point[0]-1][$point[1]]) && $grid[$point[0]-1][$point[1]] != 9 && !in_array([$point[0]-1, $point[1]], array_merge($points, $newPoints))) {
-            $newPoints[] = [$point[0]-1, $point[1]];
-        }
-        if (isset($grid[$point[0]+1][$point[1]]) && $grid[$point[0]+1][$point[1]] != 9 && !in_array([$point[0]+1, $point[1]], array_merge($points, $newPoints))) {
-            $newPoints[] = [$point[0]+1, $point[1]];
-        }
-        if (isset($grid[$point[0]][$point[1]-1]) && $grid[$point[0]][$point[1]-1] != 9 && !in_array([$point[0], $point[1]-1], array_merge($points, $newPoints))) {
-            $newPoints[] = [$point[0], $point[1]-1];
-        }
-        if (isset($grid[$point[0]][$point[1]+1]) && $grid[$point[0]][$point[1]+1] != 9 && !in_array([$point[0], $point[1]+1], array_merge($points, $newPoints))) {
-            $newPoints[] = [$point[0], $point[1]+1];
+        $neighbours =[
+            [$point[0]-1,$point[1]],
+            [$point[0]+1,$point[1]],
+            [$point[0],$point[1]-1],
+            [$point[0],$point[1]+1]
+        ];
+
+        foreach ($neighbours as $neighbour) {
+            if (($grid[$neighbour[0]][$neighbour[1]] ?? 9) != 9 && !in_array($neighbour, array_merge($points, $newPoints))) {
+                $newPoints[] = $neighbour;
+            }
         }
     }
 
