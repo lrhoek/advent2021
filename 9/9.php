@@ -9,30 +9,32 @@ $riskLevels = 0;
 
 foreach (array_keys($grid) as $row) {
     foreach (array_keys(reset($grid)) as $column) {
-        $lowPoint = true;
-        $lowPoint &= $grid[$row][$column] < ($grid[$row-1][$column] ?? $grid[$row][$column]+1);
-        $lowPoint &= $grid[$row][$column] < ($grid[$row+1][$column] ?? $grid[$row][$column]+1);
-        $lowPoint &= $grid[$row][$column] < ($grid[$row][$column-1] ?? $grid[$row][$column]+1);
-        $lowPoint &= $grid[$row][$column] < ($grid[$row][$column+1] ?? $grid[$row][$column]+1);
-        if ($lowPoint) {
+        $point = [$row, $column];
+        $isLowPoint = array_reduce(
+            getNeighbours($point),
+            function ($isLowPoint, $neighbour) use ($grid, $point) {
+                return $isLowPoint && ($grid[$neighbour[0]][$neighbour[1]] ?? 9) > $grid[$point[0]][$point[1]];
+            },
+            true
+        );
+
+        if ($isLowPoint) {
             $riskLevels += $grid[$row][$column] + 1;
+            $lowPoints[] = $point;
         }
     }
 }
 
 echo $riskLevels.PHP_EOL;
 
-foreach (array_keys($grid) as $row) {
-    foreach (array_keys(reset($grid)) as $column) {
-        $lowPoint = true;
-        $lowPoint &= $grid[$row][$column] < ($grid[$row-1][$column] ?? $grid[$row][$column]+1);
-        $lowPoint &= $grid[$row][$column] < ($grid[$row+1][$column] ?? $grid[$row][$column]+1);
-        $lowPoint &= $grid[$row][$column] < ($grid[$row][$column-1] ?? $grid[$row][$column]+1);
-        $lowPoint &= $grid[$row][$column] < ($grid[$row][$column+1] ?? $grid[$row][$column]+1);
-        if ($lowPoint) {
-            $lowPoints[] = [$row, $column];
-        }
-    }
+function getNeighbours(mixed $point): array
+{
+    return [
+        [$point[0] - 1, $point[1]],
+        [$point[0] + 1, $point[1]],
+        [$point[0], $point[1] - 1],
+        [$point[0], $point[1] + 1]
+    ];
 }
 
 function getBassin($points, $grid) {
@@ -41,12 +43,7 @@ function getBassin($points, $grid) {
 
     foreach ($points as $point) {
 
-        $neighbours =[
-            [$point[0]-1,$point[1]],
-            [$point[0]+1,$point[1]],
-            [$point[0],$point[1]-1],
-            [$point[0],$point[1]+1]
-        ];
+        $neighbours = getNeighbours($point);
 
         foreach ($neighbours as $neighbour) {
             if (($grid[$neighbour[0]][$neighbour[1]] ?? 9) != 9 && !in_array($neighbour, array_merge($points, $newPoints))) {
