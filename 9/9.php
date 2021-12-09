@@ -6,6 +6,7 @@ $rows = explode(PHP_EOL, $input);
 $grid = array_map(fn ($row) => str_split($row), $rows);
 
 $riskLevels = 0;
+$lowPoints = [];
 
 foreach (array_keys($grid) as $row) {
     foreach (array_keys(reset($grid)) as $column) {
@@ -27,7 +28,7 @@ foreach (array_keys($grid) as $row) {
 
 echo $riskLevels.PHP_EOL;
 
-function getNeighbours(mixed $point): array
+function getNeighbours($point): array
 {
     return [
         [$point[0] - 1, $point[1]],
