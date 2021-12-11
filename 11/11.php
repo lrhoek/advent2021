@@ -20,7 +20,6 @@ class Octopus {
             $this->grid[$this->x-1][$this->y] ?? null,
             $this->grid[$this->x-1][$this->y+1] ?? null,
             $this->grid[$this->x][$this->y-1] ?? null,
-            $this->grid[$this->x][$this->y] ?? null,
             $this->grid[$this->x][$this->y+1] ?? null,
             $this->grid[$this->x+1][$this->y-1] ?? null,
             $this->grid[$this->x+1][$this->y] ?? null,
