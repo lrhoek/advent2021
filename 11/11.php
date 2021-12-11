@@ -7,13 +7,10 @@ class Octopus {
     public array $grid;
     public int $x;
 
-    function __construct(int $x, int $y, int $energy) {
+    function __construct(int $x, int $y, int $energy, &$grid) {
         $this->x = $x;
         $this->y = $y;
         $this->energy = $energy;
-    }
-
-    function set_grid(array &$grid) {
         $this->grid = &$grid;
     }
 
@@ -53,9 +50,9 @@ class Octopus {
     }
 }
 
-function map_row($line, $x) : array {
+function map_row($line, $x, $grid) : array {
     $row = str_split($line);
-    return array_map(fn ($energy, $y) => new Octopus($x, $y, (int) $energy), $row, array_keys($row));
+    return array_map(fn ($energy, $y) => new Octopus($x, $y, (int) $energy, $grid[0]), $row, array_keys($row));
 }
 
 function step($grid) : int {
@@ -69,8 +66,7 @@ function find_steps_to_flash_amount($grid, $amount, $step = 1) : int {
 
 function get_a_grid($input) {
     $grid = explode(PHP_EOL, $input);
-    $grid = array_map(map_row(...), $grid, array_keys($grid));
-    array_walk_recursive($grid, fn (Octopus $octopus) => $octopus->set_grid($grid));
+    $grid = array_map(map_row(...), $grid, array_keys($grid), array_fill(0, count($grid), [&$grid]));
     return $grid;
 }
 
